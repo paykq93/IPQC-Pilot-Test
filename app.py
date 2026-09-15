@@ -138,7 +138,7 @@ category = st.selectbox(
 
 finding = st.text_area(
     "Finding Description",
-    placeholder="Describe the IPQC finding..."
+    placeholder="During [WHEN], [WHAT] was observed at [WHERE]. This does not meet [REQUIREMENT]. Acknowledged by [SUPERVISOR/LEADER]."
 )
 
 
