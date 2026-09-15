@@ -1,7 +1,32 @@
 import streamlit as st
 from datetime import datetime, date, time, timedelta
 from zoneinfo import ZoneInfo
+from supabase import create_client
 
+
+# ==========================================
+# SUPABASE CONNECTION
+# ==========================================
+
+@st.cache_resource
+def init_supabase():
+    return create_client(
+        st.secrets["SUPABASE_URL"],
+        st.secrets["SUPABASE_KEY"]
+    )
+
+supabase = init_supabase()
+
+
+# ==========================================
+# PAGE SETUP
+# ==========================================
+
+st.set_page_config(
+    page_title="IPQC Finding Entry",
+    page_icon="🔍",
+    layout="centered"
+)
 
 # ==========================================
 # PAGE SETUP
