@@ -5,30 +5,6 @@ from supabase import create_client
 
 
 # ==========================================
-# SUPABASE CONNECTION
-# ==========================================
-
-@st.cache_resource
-def init_supabase():
-    return create_client(
-        st.secrets["SUPABASE_URL"],
-        st.secrets["SUPABASE_KEY"]
-    )
-
-supabase = init_supabase()
-
-
-# ==========================================
-# PAGE SETUP
-# ==========================================
-
-st.set_page_config(
-    page_title="IPQC Finding Entry",
-    page_icon="🔍",
-    layout="centered"
-)
-
-# ==========================================
 # PAGE SETUP
 # ==========================================
 
@@ -39,6 +15,21 @@ st.set_page_config(
 )
 
 st.title("IPQC Finding Entry")
+
+
+# ==========================================
+# SUPABASE CONNECTION
+# ==========================================
+
+@st.cache_resource
+def init_supabase():
+    return create_client(
+        st.secrets["SUPABASE_URL"],
+        st.secrets["SUPABASE_KEY"]
+    )
+
+
+supabase = init_supabase()
 
 
 # ==========================================
@@ -171,7 +162,6 @@ def get_shift(current_datetime):
         else:
 
             roster_date = current_datetime.date()
-
 
     # Find correct roster week
     for week_start, patterns in shift_roster.items():
@@ -473,8 +463,9 @@ if submitted:
             f"{submitted_shift_type}"
         )
 
+
         # ----------------------------------
-        # SAVE FINDING TO SUPABASE
+        # PREPARE DATABASE RECORD
         # ----------------------------------
 
         finding_record = {
@@ -492,84 +483,105 @@ if submitted:
             "status": "Open"
         }
 
-try:
-    response = supabase.table("Findings").insert(
-        finding_record
-    ).execute()
-
-    st.success("Finding saved to Supabase successfully!")
-
-except Exception as e:
-    st.error(f"Supabase error: {e}")
-    st.stop()
-        # ----------------------------------
-        # SUCCESS MESSAGE
-        # ----------------------------------
-
-        st.success(
-            "Finding submitted successfully!"
-        )
-
 
         # ----------------------------------
-        # DISPLAY SUBMITTED RECORD
+        # SAVE FINDING TO SUPABASE
         # ----------------------------------
 
-        st.subheader(
-            "Submitted Finding"
-        )
+        try:
 
-        st.write(
-            "Finding Date & Time:",
-            finding_datetime
-        )
+            response = (
+                supabase
+                .table("Findings")
+                .insert(finding_record)
+                .execute()
+            )
 
-        st.write(
-            "Shift:",
-            submitted_shift
-        )
 
-        st.write(
-            "Area:",
-            area
-        )
+            # ----------------------------------
+            # SUCCESS MESSAGE
+            # ----------------------------------
 
-        st.write(
-            "Station:",
-            station
-        )
+            st.success(
+                "Finding submitted successfully!"
+            )
 
-        st.write(
-            "Equipment / Station ID:",
-            equipment_id
-        )
 
-        st.write(
-            "Category:",
-            category
-        )
+            # ----------------------------------
+            # DISPLAY SUBMITTED RECORD
+            # ----------------------------------
 
-        st.write(
-            "Finding Description:",
-            finding
-        )
+            st.subheader(
+                "Submitted Finding"
+            )
 
-        st.write(
-            "Interview Result:",
-            interview_result
-        )
+            st.write(
+                "Finding Date & Time:",
+                finding_datetime
+            )
 
-        st.write(
-            "Containment Action:",
-            containment_action
-        )
+            st.write(
+                "Shift:",
+                submitted_shift
+            )
 
-        st.write(
-            "Auditee:",
-            auditee
-        )
+            st.write(
+                "Area:",
+                area
+            )
 
-        st.write(
-            "Auditor:",
-            auditor
-        )
+            st.write(
+                "Station:",
+                station
+            )
+
+            st.write(
+                "Equipment / Station ID:",
+                equipment_id
+            )
+
+            st.write(
+                "Category:",
+                category
+            )
+
+            st.write(
+                "Finding Description:",
+                finding
+            )
+
+            st.write(
+                "Interview Result:",
+                interview_result
+            )
+
+            st.write(
+                "Containment Action:",
+                containment_action
+            )
+
+            st.write(
+                "Auditee:",
+                auditee
+            )
+
+            st.write(
+                "Auditor:",
+                auditor
+            )
+
+            st.write(
+                "Status:",
+                "Open"
+            )
+
+
+        # ----------------------------------
+        # DATABASE ERROR
+        # ----------------------------------
+
+        except Exception as e:
+
+            st.error(
+                f"Supabase error: {e}"
+            )
