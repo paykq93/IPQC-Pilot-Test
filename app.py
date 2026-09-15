@@ -300,12 +300,26 @@ finding = st.text_area(
 
 
 # ==========================================
-# CORRECTIVE ACTION
+# INTERVIEW RESULT
 # ==========================================
 
-corrective_action = st.text_area(
-    "Corrective Action",
-    placeholder="Enter corrective action taken / proposed"
+interview_result = st.text_area(
+    "Interview Result",
+    placeholder=(
+        "Enter interview result / explanation from auditee"
+    )
+)
+
+
+# ==========================================
+# CONTAINMENT ACTION
+# ==========================================
+
+containment_action = st.text_area(
+    "Containment Action",
+    placeholder=(
+        "Enter immediate containment action taken"
+    )
 )
 
 
@@ -380,10 +394,16 @@ if submitted:
             "Please enter a Finding Description."
         )
 
-    elif corrective_action.strip() == "":
+    elif interview_result.strip() == "":
 
         st.error(
-            "Please enter a Corrective Action."
+            "Please enter an Interview Result."
+        )
+
+    elif containment_action.strip() == "":
+
+        st.error(
+            "Please enter a Containment Action."
         )
 
     elif auditee.strip() == "":
@@ -477,13 +497,18 @@ if submitted:
         )
 
         st.write(
-            "Finding:",
+            "Finding Description:",
             finding
         )
 
         st.write(
-            "Corrective Action:",
-            corrective_action
+            "Interview Result:",
+            interview_result
+        )
+
+        st.write(
+            "Containment Action:",
+            containment_action
         )
 
         st.write(
