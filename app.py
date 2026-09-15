@@ -1,5 +1,5 @@
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, date, time, timedelta
 from zoneinfo import ZoneInfo
 
 
@@ -68,6 +68,123 @@ stations = {
 
 
 # ==========================================
+# 2026 SHIFT ROSTER
+# ==========================================
+
+# Format:
+# Week Start Date : (DAY shift pattern, NIGHT shift pattern)
+
+shift_roster = {
+
+    # Q3
+    date(2026, 6, 28): ("CCBBBCC", "DDAAADD"),
+    date(2026, 7, 5):  ("AAADDDD", "BBBCCCC"),
+    date(2026, 7, 12): ("AAAADDD", "BBBBCCC"),
+    date(2026, 7, 19): ("BBBCCCC", "AAADDDD"),
+    date(2026, 7, 26): ("BBBBCCC", "AAAADDD"),
+
+    date(2026, 8, 2):  ("AAADDDD", "BBBCCCC"),
+    date(2026, 8, 9):  ("AAAADDD", "BBBBCCC"),
+    date(2026, 8, 16): ("BBBCCCC", "AAADDDD"),
+    date(2026, 8, 23): ("BBBBCCC", "AAAADDD"),
+    date(2026, 8, 30): ("AAADDDD", "BBBCCCC"),
+
+    date(2026, 9, 6):  ("AAAADDD", "BBBBCCC"),
+    date(2026, 9, 13): ("BBBCCCC", "AAADDDD"),
+    date(2026, 9, 20): ("BBBBCCC", "AAAADDD"),
+
+    # Q4
+    date(2026, 9, 27): ("AADDDAA", "BBCCCBB"),
+
+    date(2026, 10, 4):  ("DDDAAAA", "CCCBBBB"),
+    date(2026, 10, 11): ("CCCCBBB", "DDDDAAA"),
+    date(2026, 10, 18): ("CCCBBBB", "DDDAAAA"),
+    date(2026, 10, 25): ("DDDDAAA", "CCCCBBB"),
+
+    date(2026, 11, 1):  ("DDDAAAA", "CCCBBBB"),
+    date(2026, 11, 8):  ("CCCCBBB", "DDDDAAA"),
+    date(2026, 11, 15): ("CCCBBBB", "DDDAAAA"),
+    date(2026, 11, 22): ("DDDDAAA", "CCCCBBB"),
+    date(2026, 11, 29): ("DDDAAAA", "CCCBBBB"),
+
+    date(2026, 12, 6):  ("CCCCBBB", "DDDDAAA"),
+    date(2026, 12, 13): ("CCCBBBB", "DDDAAAA"),
+    date(2026, 12, 20): ("DDDDAAA", "CCCCBBB"),
+    date(2026, 12, 27): ("DDAAA", "CCBBB")
+}
+
+
+# ==========================================
+# FUNCTION TO DETERMINE SHIFT
+# ==========================================
+
+def get_shift(current_datetime):
+
+    current_time = current_datetime.time()
+
+    day_start = time(6, 30)
+    night_start = time(18, 30)
+
+    # --------------------------------------
+    # DETERMINE DAY / NIGHT
+    # --------------------------------------
+
+    if day_start <= current_time < night_start:
+
+        shift_type = "DAY"
+        roster_date = current_datetime.date()
+
+    else:
+
+        shift_type = "NIGHT"
+
+        # After midnight but before 6:30 AM
+        # still belongs to previous night's shift
+        if current_time < day_start:
+            roster_date = (
+                current_datetime.date()
+                - timedelta(days=1)
+            )
+
+        else:
+            roster_date = current_datetime.date()
+
+
+    # --------------------------------------
+    # FIND CORRECT WEEK
+    # --------------------------------------
+
+    for week_start, patterns in shift_roster.items():
+
+        days_difference = (
+            roster_date - week_start
+        ).days
+
+        if 0 <= days_difference <= 6:
+
+            day_pattern = patterns[0]
+            night_pattern = patterns[1]
+
+            if shift_type == "DAY":
+                pattern = day_pattern
+            else:
+                pattern = night_pattern
+
+            if days_difference < len(pattern):
+
+                shift_letter = pattern[
+                    days_difference
+                ]
+
+                return (
+                    shift_letter,
+                    shift_type
+                )
+
+    return ("N/A", shift_type)
+
+
+# ==========================================
 # FINDING DATE & TIME
 # ==========================================
 
@@ -87,6 +204,25 @@ st.text_input(
 
 
 # ==========================================
+# AUTOMATIC SHIFT
+# ==========================================
+
+shift_letter, shift_type = get_shift(
+    current_datetime
+)
+
+shift_display = (
+    f"{shift_letter} - {shift_type}"
+)
+
+st.text_input(
+    "Shift",
+    value=shift_display,
+    disabled=True
+)
+
+
+# ==========================================
 # AREA
 # ==========================================
 
@@ -100,7 +236,6 @@ area = st.selectbox(
 
 # ==========================================
 # STATION
-# Station depends on selected Area
 # ==========================================
 
 if area is not None:
@@ -262,8 +397,24 @@ if submitted:
             ZoneInfo("Asia/Kuala_Lumpur")
         )
 
-        finding_datetime = submitted_datetime.strftime(
-            "%d-%b-%Y %H:%M:%S"
+        finding_datetime = (
+            submitted_datetime.strftime(
+                "%d-%b-%Y %H:%M:%S"
+            )
+        )
+
+
+        # ----------------------------------
+        # RECALCULATE SHIFT AT SUBMISSION
+        # ----------------------------------
+
+        submitted_shift_letter, submitted_shift_type = (
+            get_shift(submitted_datetime)
+        )
+
+        submitted_shift = (
+            f"{submitted_shift_letter} - "
+            f"{submitted_shift_type}"
         )
 
 
@@ -287,6 +438,11 @@ if submitted:
         st.write(
             "Finding Date & Time:",
             finding_datetime
+        )
+
+        st.write(
+            "Shift:",
+            submitted_shift
         )
 
         st.write(
