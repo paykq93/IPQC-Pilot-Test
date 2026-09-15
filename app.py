@@ -106,6 +106,15 @@ station = st.selectbox(
     stations[area]
 )
 
+# ==========================================
+# Equipment / Station ID
+# ==========================================
+
+category = st.text_area(
+    "Equipment / Station ID",
+    placeholder="E.g. ICOS-02"
+)
+
 
 # ==========================================
 # CATEGORY
