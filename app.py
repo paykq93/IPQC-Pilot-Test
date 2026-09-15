@@ -114,11 +114,11 @@ station = st.selectbox(
 category = st.selectbox(
     "Category",
     [
-        "Process",
-        "Material",
-        "Machine",
-        "Method",
-        "5S"
+        "Method / Handling - Incorrect process execution, setup, or operating method",
+        "Machine / Facility - Ionizer, machine abnormal reading, equipment/facility condition",
+        "Material / Product - Material condition, expiry, identification, mixed material",
+        "Document / Record - Checklist, record, label, traceability, or documentation",
+        "Personnel Compliance - Not following cleanroom, 5S, ESD, discipline requirement"
     ]
 )
 
