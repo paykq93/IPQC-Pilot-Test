@@ -87,9 +87,6 @@ stations = {
 # 2026 SHIFT ROSTER
 # ==========================================
 
-# Format:
-# Week Start Date : (DAY shift pattern, NIGHT shift pattern)
-
 shift_roster = {
 
     # Q3
@@ -493,7 +490,10 @@ if submitted:
             response = (
                 supabase
                 .table("Findings")
-                .insert(finding_record)
+                .insert(
+                    finding_record,
+                    returning="minimal"
+                )
                 .execute()
             )
 
