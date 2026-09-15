@@ -92,25 +92,42 @@ st.text_input(
 
 area = st.selectbox(
     "Area",
-    ["DP", "FOL", "MOL", "EOL"]
+    ["DP", "FOL", "MOL", "EOL"],
+    index=None,
+    placeholder="Select Area"
 )
 
 
 # ==========================================
 # STATION
-# Automatically changes based on Area
+# Station depends on selected Area
 # ==========================================
 
-station = st.selectbox(
-    "Station",
-    stations[area]
-)
+if area is not None:
+
+    station = st.selectbox(
+        "Station",
+        stations[area],
+        index=None,
+        placeholder="Select Station"
+    )
+
+else:
+
+    station = st.selectbox(
+        "Station",
+        [],
+        index=None,
+        placeholder="Select Area first",
+        disabled=True
+    )
+
 
 # ==========================================
-# Equipment / Station ID
+# EQUIPMENT / STATION ID
 # ==========================================
 
-owner = st.text_input(
+equipment_id = st.text_input(
     "Equipment / Station ID",
     placeholder="E.g. ICO-02"
 )
@@ -124,11 +141,17 @@ category = st.selectbox(
     "Category",
     [
         "Method / Handling - Incorrect process execution, setup, or operating method",
+
         "Machine / Facility - Ionizer, machine abnormal reading, equipment/facility condition",
+
         "Material / Product - Material condition, expiry, identification, mixed material",
+
         "Document / Record - Checklist, record, label, traceability, or documentation",
+
         "Personnel Compliance - Not following cleanroom, 5S, ESD, discipline requirement"
-    ]
+    ],
+    index=None,
+    placeholder="Select Category"
 )
 
 
@@ -138,7 +161,11 @@ category = st.selectbox(
 
 finding = st.text_area(
     "Finding Description",
-    placeholder="During [WHEN], [WHAT] was observed at [WHERE]. This does not meet [REQUIREMENT]. Acknowledged by [SUPERVISOR/LEADER]."
+    placeholder=(
+        "During [WHEN], [WHAT] was observed at [WHERE]. "
+        "This does not meet [REQUIREMENT]. "
+        "Acknowledged by [SUPERVISOR/LEADER]."
+    )
 )
 
 
@@ -152,7 +179,9 @@ priority = st.selectbox(
         "Low",
         "Medium",
         "High"
-    ]
+    ],
+    index=None,
+    placeholder="Select Priority"
 )
 
 
@@ -183,27 +212,70 @@ submitted = st.button(
 
 if submitted:
 
-    # Capture the actual submission time
-    submitted_datetime = datetime.now(
-        ZoneInfo("Asia/Kuala_Lumpur")
-    )
+    # --------------------------------------
+    # VALIDATION
+    # --------------------------------------
 
-    finding_datetime = submitted_datetime.strftime(
-        "%d-%b-%Y %H:%M:%S"
-    )
+    if area is None:
 
-    # Basic validation
-    if finding.strip() == "":
+        st.error(
+            "Please select an Area."
+        )
+
+    elif station is None:
+
+        st.error(
+            "Please select a Station."
+        )
+
+    elif equipment_id.strip() == "":
+
+        st.error(
+            "Please enter an Equipment / Station ID."
+        )
+
+    elif category is None:
+
+        st.error(
+            "Please select a Category."
+        )
+
+    elif finding.strip() == "":
+
         st.error(
             "Please enter a Finding Description."
         )
 
+    elif priority is None:
+
+        st.error(
+            "Please select a Priority."
+        )
+
     elif owner.strip() == "":
+
         st.error(
             "Please enter an Owner."
         )
 
     else:
+
+        # ----------------------------------
+        # CAPTURE ACTUAL SUBMISSION TIME
+        # ----------------------------------
+
+        submitted_datetime = datetime.now(
+            ZoneInfo("Asia/Kuala_Lumpur")
+        )
+
+        finding_datetime = submitted_datetime.strftime(
+            "%d-%b-%Y %H:%M:%S"
+        )
+
+
+        # ----------------------------------
+        # SUCCESS
+        # ----------------------------------
 
         st.success(
             "Finding submitted successfully!"
@@ -212,6 +284,11 @@ if submitted:
         st.subheader(
             "Submitted Finding"
         )
+
+
+        # ----------------------------------
+        # DISPLAY SUBMITTED RECORD
+        # ----------------------------------
 
         st.write(
             "Finding Date & Time:",
@@ -226,6 +303,11 @@ if submitted:
         st.write(
             "Station:",
             station
+        )
+
+        st.write(
+            "Equipment / Station ID:",
+            equipment_id
         )
 
         st.write(
