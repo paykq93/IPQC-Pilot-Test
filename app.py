@@ -125,10 +125,7 @@ def get_shift(current_datetime):
     day_start = time(6, 30)
     night_start = time(18, 30)
 
-    # --------------------------------------
-    # DETERMINE DAY / NIGHT
-    # --------------------------------------
-
+    # Determine DAY / NIGHT
     if day_start <= current_time < night_start:
 
         shift_type = "DAY"
@@ -138,22 +135,20 @@ def get_shift(current_datetime):
 
         shift_type = "NIGHT"
 
-        # After midnight but before 6:30 AM
-        # still belongs to previous night's shift
+        # Before 6:30 AM belongs to previous night's shift
         if current_time < day_start:
+
             roster_date = (
                 current_datetime.date()
                 - timedelta(days=1)
             )
 
         else:
+
             roster_date = current_datetime.date()
 
 
-    # --------------------------------------
-    # FIND CORRECT WEEK
-    # --------------------------------------
-
+    # Find correct roster week
     for week_start, patterns in shift_roster.items():
 
         days_difference = (
@@ -305,6 +300,16 @@ finding = st.text_area(
 
 
 # ==========================================
+# CORRECTIVE ACTION
+# ==========================================
+
+corrective_action = st.text_area(
+    "Corrective Action",
+    placeholder="Enter corrective action taken / proposed"
+)
+
+
+# ==========================================
 # AUDITEE
 # ==========================================
 
@@ -373,6 +378,12 @@ if submitted:
 
         st.error(
             "Please enter a Finding Description."
+        )
+
+    elif corrective_action.strip() == "":
+
+        st.error(
+            "Please enter a Corrective Action."
         )
 
     elif auditee.strip() == "":
@@ -468,6 +479,11 @@ if submitted:
         st.write(
             "Finding:",
             finding
+        )
+
+        st.write(
+            "Corrective Action:",
+            corrective_action
         )
 
         st.write(
