@@ -240,7 +240,7 @@ if submitted:
             "Please enter a Finding Description."
         )
 
-    elif auditee is None:
+    elif auditee.strip() == "":
 
         st.error(
             "Please enter an Auditee."
@@ -268,21 +268,21 @@ if submitted:
 
 
         # ----------------------------------
-        # SUCCESS
+        # SUCCESS MESSAGE
         # ----------------------------------
 
         st.success(
             "Finding submitted successfully!"
         )
 
-        st.subheader(
-            "Submitted Finding"
-        )
-
 
         # ----------------------------------
         # DISPLAY SUBMITTED RECORD
         # ----------------------------------
+
+        st.subheader(
+            "Submitted Finding"
+        )
 
         st.write(
             "Finding Date & Time:",
