@@ -3,6 +3,52 @@ from datetime import date
 
 st.title("IPQC Finding Entry")
 
+# Station list based on Area
+stations = {
+    "DP": [
+        "IWI",
+        "Wafer Backgrind",
+        "Wafer Mount",
+        "Laser Trench",
+        "Sawing",
+        "UV",
+        "Pick & Place",
+        "Die Bank",
+        "Waffle Pack Cleaning"
+    ],
+
+    "FOL": [
+        "2nd Opt Inspection",
+        "Substrate Bake",
+        "Solder Paste Printing",
+        "Chip Cap Attach",
+        "Imprint Printing",
+        "Flip Chip Attach",
+        "Single Reflow",
+        "Flux Cleaning",
+        "X-Ray"
+    ],
+
+    "MOL": [
+        "Prebake Oven",
+        "Plasma",
+        "Underfill Dispense",
+        "Pressure Cure",
+        "UF CSAM",
+        "AOI"
+    ],
+
+    "EOL": [
+        "Adhesive Dispense",
+        "Stiffener/Lid Attach",
+        "Indium Attach & Reflow",
+        "Solder Ball Mount & Reflow",
+        "Open Short",
+        "ICOS",
+        "Assy VM"
+    ]
+}
+
 with st.form("finding_form"):
 
     finding_date = st.date_input(
@@ -10,14 +56,16 @@ with st.form("finding_form"):
         value=date.today()
     )
 
-    line = st.selectbox(
-        "Line",
-        ["Line 1", "Line 2", "Line 3"]
+    # Area selection
+    area = st.selectbox(
+        "Area",
+        ["DP", "FOL", "MOL", "EOL"]
     )
 
+    # Station automatically follows selected Area
     station = st.selectbox(
         "Station",
-        ["Die Attach", "Wire Bond", "Mold", "Underfill"]
+        stations[area]
     )
 
     category = st.selectbox(
@@ -25,22 +73,29 @@ with st.form("finding_form"):
         ["Process", "Material", "Machine", "Method", "5S"]
     )
 
-    finding = st.text_area("Finding Description")
+    finding = st.text_area(
+        "Finding Description"
+    )
 
     priority = st.selectbox(
         "Priority",
         ["Low", "Medium", "High"]
     )
 
-    owner = st.text_input("Owner")
+    owner = st.text_input(
+        "Owner"
+    )
 
-    submitted = st.form_submit_button("Submit Finding")
+    submitted = st.form_submit_button(
+        "Submit Finding"
+    )
+
 
 if submitted:
     st.success("Finding submitted successfully!")
 
     st.write("Date:", finding_date)
-    st.write("Line:", line)
+    st.write("Area:", area)
     st.write("Station:", station)
     st.write("Category:", category)
     st.write("Finding:", finding)
