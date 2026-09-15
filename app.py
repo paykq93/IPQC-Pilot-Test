@@ -162,36 +162,30 @@ category = st.selectbox(
 finding = st.text_area(
     "Finding Description",
     placeholder=(
-        "During [WHEN], [WHAT] was observed at [WHERE]. "
-        "This does not meet [REQUIREMENT]. "
-        "Acknowledged by [SUPERVISOR/LEADER]."
+        "During [when], [what] was observed at [where]. "
+        "This does not meet [requirement]. "
+        "Acknowledged by [supervisor/leader]."
     )
 )
 
 
 # ==========================================
-# PRIORITY
+# AUDITEE
 # ==========================================
 
-priority = st.selectbox(
-    "Priority",
-    [
-        "Low",
-        "Medium",
-        "High"
-    ],
-    index=None,
-    placeholder="Select Priority"
+auditee = st.text_input(
+    "Auditee",
+    placeholder="Enter auditee badge"
 )
 
 
 # ==========================================
-# OWNER
+# AUDITOR
 # ==========================================
 
-owner = st.text_input(
-    "Owner",
-    placeholder="Enter owner name"
+auditor = st.text_input(
+    "Auditor",
+    placeholder="Enter auditor badge"
 )
 
 
@@ -246,16 +240,16 @@ if submitted:
             "Please enter a Finding Description."
         )
 
-    elif priority is None:
+    elif auditee is None:
 
         st.error(
-            "Please select a Priority."
+            "Please enter an Auditee."
         )
 
-    elif owner.strip() == "":
+    elif auditor.strip() == "":
 
         st.error(
-            "Please enter an Owner."
+            "Please enter an Auditor."
         )
 
     else:
@@ -321,11 +315,11 @@ if submitted:
         )
 
         st.write(
-            "Priority:",
-            priority
+            "Auditee:",
+            auditee
         )
 
         st.write(
-            "Owner:",
-            owner
+            "Auditor:",
+            auditor
         )
