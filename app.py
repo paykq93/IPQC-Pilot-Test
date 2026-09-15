@@ -473,7 +473,28 @@ if submitted:
             f"{submitted_shift_type}"
         )
 
+        # ----------------------------------
+        # SAVE FINDING TO SUPABASE
+        # ----------------------------------
 
+        finding_record = {
+            "finding_datetime": finding_datetime,
+            "shift": submitted_shift,
+            "area": area,
+            "station": station,
+            "equipment_id": equipment_id,
+            "category": category,
+            "finding_description": finding,
+            "interview_result": interview_result,
+            "containment_action": containment_action,
+            "auditee": auditee,
+            "auditor": auditor,
+            "status": "Open"
+        }
+
+        supabase.table("Findings").insert(
+            finding_record
+        ).execute()
         # ----------------------------------
         # SUCCESS MESSAGE
         # ----------------------------------
