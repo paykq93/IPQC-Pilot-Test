@@ -68,6 +68,25 @@ stations = {
 
 
 # ==========================================
+# FINDING DATE & TIME
+# ==========================================
+
+current_datetime = datetime.now(
+    ZoneInfo("Asia/Kuala_Lumpur")
+)
+
+display_datetime = current_datetime.strftime(
+    "%d-%b-%Y %H:%M:%S"
+)
+
+st.text_input(
+    "Finding Date & Time",
+    value=display_datetime,
+    disabled=True
+)
+
+
+# ==========================================
 # AREA
 # ==========================================
 
@@ -79,7 +98,7 @@ area = st.selectbox(
 
 # ==========================================
 # STATION
-# Station automatically changes with Area
+# Automatically changes based on Area
 # ==========================================
 
 station = st.selectbox(
@@ -89,44 +108,64 @@ station = st.selectbox(
 
 
 # ==========================================
-# FINDING FORM
+# CATEGORY
 # ==========================================
 
-with st.form("finding_form"):
+category = st.selectbox(
+    "Category",
+    [
+        "Process",
+        "Material",
+        "Machine",
+        "Method",
+        "5S"
+    ]
+)
 
-    category = st.selectbox(
-        "Category",
-        [
-            "Process",
-            "Material",
-            "Machine",
-            "Method",
-            "5S"
-        ]
-    )
 
-    finding = st.text_area(
-        "Finding Description",
-        placeholder="Describe the IPQC finding..."
-    )
+# ==========================================
+# FINDING DESCRIPTION
+# ==========================================
 
-    priority = st.selectbox(
-        "Priority",
-        [
-            "Low",
-            "Medium",
-            "High"
-        ]
-    )
+finding = st.text_area(
+    "Finding Description",
+    placeholder="Describe the IPQC finding..."
+)
 
-    owner = st.text_input(
-        "Owner",
-        placeholder="Enter owner name"
-    )
 
-    submitted = st.form_submit_button(
-        "Submit Finding"
-    )
+# ==========================================
+# PRIORITY
+# ==========================================
+
+priority = st.selectbox(
+    "Priority",
+    [
+        "Low",
+        "Medium",
+        "High"
+    ]
+)
+
+
+# ==========================================
+# OWNER
+# ==========================================
+
+owner = st.text_input(
+    "Owner",
+    placeholder="Enter owner name"
+)
+
+
+# ==========================================
+# SUBMIT BUTTON
+# ==========================================
+
+submitted = st.button(
+    "Submit Finding",
+    type="primary",
+    use_container_width=True
+)
 
 
 # ==========================================
@@ -135,52 +174,67 @@ with st.form("finding_form"):
 
 if submitted:
 
-    # Automatically capture Malaysia date & time
-    finding_datetime = datetime.now(
+    # Capture the actual submission time
+    submitted_datetime = datetime.now(
         ZoneInfo("Asia/Kuala_Lumpur")
     )
 
-    # Format:
-    # 15-Sep-2026 14:08:37
-    finding_datetime_formatted = finding_datetime.strftime(
+    finding_datetime = submitted_datetime.strftime(
         "%d-%b-%Y %H:%M:%S"
     )
 
-    st.success("Finding submitted successfully!")
+    # Basic validation
+    if finding.strip() == "":
+        st.error(
+            "Please enter a Finding Description."
+        )
 
-    st.subheader("Submitted Finding")
+    elif owner.strip() == "":
+        st.error(
+            "Please enter an Owner."
+        )
 
-    st.write(
-        "Finding Date & Time:",
-        finding_datetime_formatted
-    )
+    else:
 
-    st.write(
-        "Area:",
-        area
-    )
+        st.success(
+            "Finding submitted successfully!"
+        )
 
-    st.write(
-        "Station:",
-        station
-    )
+        st.subheader(
+            "Submitted Finding"
+        )
 
-    st.write(
-        "Category:",
-        category
-    )
+        st.write(
+            "Finding Date & Time:",
+            finding_datetime
+        )
 
-    st.write(
-        "Finding:",
-        finding
-    )
+        st.write(
+            "Area:",
+            area
+        )
 
-    st.write(
-        "Priority:",
-        priority
-    )
+        st.write(
+            "Station:",
+            station
+        )
 
-    st.write(
-        "Owner:",
-        owner
-    )
+        st.write(
+            "Category:",
+            category
+        )
+
+        st.write(
+            "Finding:",
+            finding
+        )
+
+        st.write(
+            "Priority:",
+            priority
+        )
+
+        st.write(
+            "Owner:",
+            owner
+        )
