@@ -49,23 +49,23 @@ stations = {
     ]
 }
 
+# These are OUTSIDE the form so they update immediately
+area = st.selectbox(
+    "Area",
+    ["DP", "FOL", "MOL", "EOL"]
+)
+
+station = st.selectbox(
+    "Station",
+    stations[area]
+)
+
+# Main form
 with st.form("finding_form"):
 
     finding_date = st.date_input(
         "Finding Date",
         value=date.today()
-    )
-
-    # Area selection
-    area = st.selectbox(
-        "Area",
-        ["DP", "FOL", "MOL", "EOL"]
-    )
-
-    # Station automatically follows selected Area
-    station = st.selectbox(
-        "Station",
-        stations[area]
     )
 
     category = st.selectbox(
