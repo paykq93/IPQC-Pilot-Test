@@ -306,7 +306,7 @@ finding = st.text_area(
 interview_result = st.text_area(
     "Interview Result",
     placeholder=(
-        "Enter interview result / explanation from auditee"
+        "Enter explanation from auditee or supervisor"
     )
 )
 
