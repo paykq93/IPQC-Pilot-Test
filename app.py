@@ -492,9 +492,16 @@ if submitted:
             "status": "Open"
         }
 
-        supabase.table("Findings").insert(
-            finding_record
-        ).execute()
+try:
+    response = supabase.table("Findings").insert(
+        finding_record
+    ).execute()
+
+    st.success("Finding saved to Supabase successfully!")
+
+except Exception as e:
+    st.error(f"Supabase error: {e}")
+    st.stop()
         # ----------------------------------
         # SUCCESS MESSAGE
         # ----------------------------------
