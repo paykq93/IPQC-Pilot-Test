@@ -110,9 +110,9 @@ station = st.selectbox(
 # Equipment / Station ID
 # ==========================================
 
-category = st.text_area(
+owner = st.text_input(
     "Equipment / Station ID",
-    placeholder="E.g. ICOS-02"
+    placeholder="E.g. ICO-02"
 )
 
 
