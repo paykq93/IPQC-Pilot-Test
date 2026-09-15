@@ -1,10 +1,27 @@
 import streamlit as st
-from datetime import date
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+
+# ==========================================
+# PAGE SETUP
+# ==========================================
+
+st.set_page_config(
+    page_title="IPQC Finding Entry",
+    page_icon="🔍",
+    layout="centered"
+)
 
 st.title("IPQC Finding Entry")
 
-# Station list based on Area
+
+# ==========================================
+# STATION LIST BY AREA
+# ==========================================
+
 stations = {
+
     "DP": [
         "IWI",
         "Wafer Backgrind",
@@ -49,41 +66,62 @@ stations = {
     ]
 }
 
-# These are OUTSIDE the form so they update immediately
+
+# ==========================================
+# AREA
+# ==========================================
+
 area = st.selectbox(
     "Area",
     ["DP", "FOL", "MOL", "EOL"]
 )
+
+
+# ==========================================
+# STATION
+# Station automatically changes with Area
+# ==========================================
 
 station = st.selectbox(
     "Station",
     stations[area]
 )
 
-# Main form
-with st.form("finding_form"):
 
-    finding_date = st.date_input(
-        "Finding Date",
-        value=date.today()
-    )
+# ==========================================
+# FINDING FORM
+# ==========================================
+
+with st.form("finding_form"):
 
     category = st.selectbox(
         "Category",
-        ["Process", "Material", "Machine", "Method", "5S"]
+        [
+            "Process",
+            "Material",
+            "Machine",
+            "Method",
+            "5S"
+        ]
     )
 
     finding = st.text_area(
-        "Finding Description"
+        "Finding Description",
+        placeholder="Describe the IPQC finding..."
     )
 
     priority = st.selectbox(
         "Priority",
-        ["Low", "Medium", "High"]
+        [
+            "Low",
+            "Medium",
+            "High"
+        ]
     )
 
     owner = st.text_input(
-        "Owner"
+        "Owner",
+        placeholder="Enter owner name"
     )
 
     submitted = st.form_submit_button(
@@ -91,13 +129,58 @@ with st.form("finding_form"):
     )
 
 
+# ==========================================
+# SUBMISSION
+# ==========================================
+
 if submitted:
+
+    # Automatically capture Malaysia date & time
+    finding_datetime = datetime.now(
+        ZoneInfo("Asia/Kuala_Lumpur")
+    )
+
+    # Format:
+    # 15-Sep-2026 14:08:37
+    finding_datetime_formatted = finding_datetime.strftime(
+        "%d-%b-%Y %H:%M:%S"
+    )
+
     st.success("Finding submitted successfully!")
 
-    st.write("Date:", finding_date)
-    st.write("Area:", area)
-    st.write("Station:", station)
-    st.write("Category:", category)
-    st.write("Finding:", finding)
-    st.write("Priority:", priority)
-    st.write("Owner:", owner)
+    st.subheader("Submitted Finding")
+
+    st.write(
+        "Finding Date & Time:",
+        finding_datetime_formatted
+    )
+
+    st.write(
+        "Area:",
+        area
+    )
+
+    st.write(
+        "Station:",
+        station
+    )
+
+    st.write(
+        "Category:",
+        category
+    )
+
+    st.write(
+        "Finding:",
+        finding
+    )
+
+    st.write(
+        "Priority:",
+        priority
+    )
+
+    st.write(
+        "Owner:",
+        owner
+    )
