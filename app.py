@@ -585,3 +585,24 @@ if submitted:
             st.error(
                 f"Supabase error: {e}"
             )
+
+# ==========================================
+# DASHBOARD TEST - READ SUPABASE
+# ==========================================
+
+st.divider()
+st.header("Dashboard Test")
+
+try:
+    dashboard_response = (
+        supabase
+        .table("Findings")
+        .select("*")
+        .execute()
+    )
+
+    st.write("Database connection successful.")
+    st.write(dashboard_response.data)
+
+except Exception as e:
+    st.error(f"Dashboard read error: {e}")
